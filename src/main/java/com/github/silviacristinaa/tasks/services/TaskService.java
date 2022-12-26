@@ -3,6 +3,7 @@ package com.github.silviacristinaa.tasks.services;
 import java.util.List;
 
 import com.github.silviacristinaa.tasks.dtos.requests.TaskRequestDto;
+import com.github.silviacristinaa.tasks.dtos.requests.TaskStatusRequestDto;
 import com.github.silviacristinaa.tasks.dtos.responses.TaskResponseDto;
 import com.github.silviacristinaa.tasks.entities.Task;
 import com.github.silviacristinaa.tasks.exceptions.BadRequestException;
@@ -15,9 +16,11 @@ public interface TaskService {
 	
 	TaskResponseDto findOneTaskById(Long id) throws NotFoundException;
 	
-	Task create(TaskRequestDto taskRequestDto) throws BadRequestException, NotFoundException, InternalServerErrorException; 
+	Task create(TaskRequestDto taskRequestDto) throws BadRequestException, NotFoundException, InternalServerErrorException;  
 	
-	void update(Long id, TaskRequestDto taskRequestDto) throws NotFoundException, BadRequestException, InternalServerErrorException; 
+	void updateTaskStatus(Long id, TaskStatusRequestDto taskStatusRequestDto) throws NotFoundException; 
+	
+	void update(Long id, TaskRequestDto taskRequestDto) throws NotFoundException, BadRequestException, InternalServerErrorException;
 	
 	void delete(Long id) throws NotFoundException;
 }

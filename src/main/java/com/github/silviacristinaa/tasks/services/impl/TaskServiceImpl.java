@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.silviacristinaa.tasks.clients.EmployeesClient;
 import com.github.silviacristinaa.tasks.dtos.requests.TaskRequestDto;
+import com.github.silviacristinaa.tasks.dtos.requests.TaskStatusRequestDto;
 import com.github.silviacristinaa.tasks.dtos.responses.EmployeeResponseDto;
 import com.github.silviacristinaa.tasks.dtos.responses.TaskResponseDto;
 import com.github.silviacristinaa.tasks.entities.Task;
@@ -72,6 +73,16 @@ public class TaskServiceImpl implements TaskService {
 		verifyEmployee(taskRequestDto);
 
 		Task task = modelMapper.map(taskRequestDto, Task.class);
+		task.setId(id);
+		taskRepository.save(task);
+	}
+
+	@Override
+	@Transactional
+	public void updateTaskStatus(Long id, TaskStatusRequestDto taskStatusRequestDto) throws NotFoundException {
+		Task task = findById(id);
+		
+		task.setStatus(taskStatusRequestDto.getStatus());
 		task.setId(id);
 		taskRepository.save(task);
 	}
