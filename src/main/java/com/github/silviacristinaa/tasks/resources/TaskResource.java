@@ -1,10 +1,11 @@
 package com.github.silviacristinaa.tasks.resources;
 
 import java.net.URI;
-import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +42,8 @@ public class TaskResource {
 
 	@GetMapping
 	@ApiOperation(value="Retorna todas as tarefas")
-	public ResponseEntity<List<TaskResponseDto>> findAll() {
-		return ResponseEntity.ok(taskService.findAll());
+	public ResponseEntity<Page<TaskResponseDto>> findAll(Pageable pageable) {
+		return ResponseEntity.ok(taskService.findAll(pageable));
 	}
 
 	@GetMapping(value = ID)
