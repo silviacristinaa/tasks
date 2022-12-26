@@ -23,7 +23,9 @@ import com.github.silviacristinaa.tasks.services.TaskService;
 
 import feign.FeignException.FeignClientException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -106,6 +108,7 @@ public class TaskServiceImpl implements TaskService {
 				throw new NotFoundException(String.format(EMPLOYEE_NOT_FOUND, taskRequestDto.getEmployeeId()));
 			}
 		} catch (Exception ex) {
+			log.error(PROBLEM_EMPLOYEES_EXTERNAL_API, ex);
 			throw new InternalServerErrorException(PROBLEM_EMPLOYEES_EXTERNAL_API);
 		}
 		if (!employee.isEnabled()) {
