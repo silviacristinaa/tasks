@@ -23,11 +23,14 @@ import com.github.silviacristinaa.tasks.exceptions.InternalServerErrorException;
 import com.github.silviacristinaa.tasks.exceptions.NotFoundException;
 import com.github.silviacristinaa.tasks.services.TaskService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/tasks")
+@Api(value = "Tarefas", tags = {"Serviço para Controle de Tarefas"})
 public class TaskResource {
 	
 	private static final String ID = "/{id}";
@@ -35,16 +38,19 @@ public class TaskResource {
 	private final TaskService taskService;
 
 	@GetMapping
+	@ApiOperation(value="Retorna todas as tarefas")
 	public ResponseEntity<List<TaskResponseDto>> findAll() {
 		return ResponseEntity.ok(taskService.findAll());
 	}
 
 	@GetMapping(value = ID)
+	@ApiOperation(value="Retorna uma tarefa única")
 	public ResponseEntity<TaskResponseDto> findById(@PathVariable Long id) throws NotFoundException {
 		return ResponseEntity.ok(taskService.findOneTaskById(id));
 	}
 
 	@PostMapping
+	@ApiOperation(value="Cria uma tarefa")
 	public ResponseEntity<Void> create(@RequestBody @Valid TaskRequestDto taskRequestDto) throws BadRequestException, NotFoundException, InternalServerErrorException {
 		URI uri = ServletUriComponentsBuilder
 				.fromCurrentRequest().path(ID).buildAndExpand(taskService.create(taskRequestDto).getId()).toUri();
@@ -52,12 +58,14 @@ public class TaskResource {
 	}
 
 	@PutMapping(value = ID)
+	@ApiOperation(value="Atualiza uma tarefa")
 	public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid TaskRequestDto taskRequestDto) throws NotFoundException, InternalServerErrorException, BadRequestException {
 		taskService.update(id, taskRequestDto);
 		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping(value = ID)
+	@ApiOperation(value="Deleta uma tarefa")
 	public ResponseEntity<Void> delete(@PathVariable Long id) throws NotFoundException {
 		taskService.delete(id);
 		return ResponseEntity.noContent().build();
