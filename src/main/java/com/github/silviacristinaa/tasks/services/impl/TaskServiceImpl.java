@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,9 +45,15 @@ public class TaskServiceImpl implements TaskService {
 	private final EmployeesClient employeesClient;
 
 	@Override
-	public List<TaskResponseDto> findAll() {
-		return taskRepository.findAll().stream().map(task -> modelMapper.map(task, TaskResponseDto.class))
-				.collect(Collectors.toList());
+	public Page<TaskResponseDto> findAll(Pageable pageable) {
+		List<TaskResponseDto> response = 
+				taskRepository.findAll().stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
+		
+		final int start = (int)pageable.getOffset();
+		final int end = Math.min((start + pageable.getPageSize()), response.size());
+		
+		Page<TaskResponseDto> page = new PageImpl<>(response.subList(start, end), pageable, response.size());
+		return page;
 	}
 
 	@Override
@@ -63,6 +72,16 @@ public class TaskServiceImpl implements TaskService {
 		Task task = modelMapper.map(taskRequestDto, Task.class);
 		return taskRepository.save(task);
 	}
+	
+	@Override
+	@Transactional
+	public void updateTaskStatus(Long id, TaskStatusRequestDto taskStatusRequestDto) throws NotFoundException {
+		Task task = findById(id);
+		
+		task.setStatus(taskStatusRequestDto.getStatus());
+		task.setId(id);
+		taskRepository.save(task);
+	}
 
 	@Override
 	@Transactional
@@ -73,16 +92,6 @@ public class TaskServiceImpl implements TaskService {
 		verifyEmployee(taskRequestDto);
 
 		Task task = modelMapper.map(taskRequestDto, Task.class);
-		task.setId(id);
-		taskRepository.save(task);
-	}
-
-	@Override
-	@Transactional
-	public void updateTaskStatus(Long id, TaskStatusRequestDto taskStatusRequestDto) throws NotFoundException {
-		Task task = findById(id);
-		
-		task.setStatus(taskStatusRequestDto.getStatus());
 		task.setId(id);
 		taskRepository.save(task);
 	}

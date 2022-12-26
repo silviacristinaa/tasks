@@ -1,6 +1,7 @@
 package com.github.silviacristinaa.tasks.services;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.github.silviacristinaa.tasks.dtos.requests.TaskRequestDto;
 import com.github.silviacristinaa.tasks.dtos.requests.TaskStatusRequestDto;
@@ -12,7 +13,7 @@ import com.github.silviacristinaa.tasks.exceptions.NotFoundException;
 
 public interface TaskService {
 	
-	List<TaskResponseDto> findAll();
+	Page<TaskResponseDto> findAll(Pageable pageable);
 	
 	TaskResponseDto findOneTaskById(Long id) throws NotFoundException;
 	
