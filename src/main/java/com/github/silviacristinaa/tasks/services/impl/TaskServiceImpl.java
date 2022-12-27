@@ -19,6 +19,8 @@ import com.github.silviacristinaa.tasks.dtos.requests.TaskStatusRequestDto;
 import com.github.silviacristinaa.tasks.dtos.responses.EmployeeResponseDto;
 import com.github.silviacristinaa.tasks.dtos.responses.TaskResponseDto;
 import com.github.silviacristinaa.tasks.entities.Task;
+import com.github.silviacristinaa.tasks.enums.PriorityEnum;
+import com.github.silviacristinaa.tasks.enums.StatusEnum;
 import com.github.silviacristinaa.tasks.exceptions.BadRequestException;
 import com.github.silviacristinaa.tasks.exceptions.InternalServerErrorException;
 import com.github.silviacristinaa.tasks.exceptions.NotFoundException;
@@ -34,6 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class TaskServiceImpl implements TaskService {
 
+	private static final String MSG_ERROR_FILLING_DATES = "to perform the search by dates, it is mandatory to fill the initial"
+			+ "date and final date"; 
 	private static final String MSG_ERROR_DATE_GRATER_THAN = "End date must be greater than start date";
 	private static final String TASK_NOT_FOUND = "Task %s not found";
 	private static final String EMPLOYEE_NOT_FOUND = "Employee %s not found";
@@ -48,6 +52,27 @@ public class TaskServiceImpl implements TaskService {
 	public Page<TaskResponseDto> findAll(Pageable pageable) {
 		List<TaskResponseDto> response = 
 				taskRepository.findAll().stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
+		
+		final int start = (int)pageable.getOffset();
+		final int end = Math.min((start + pageable.getPageSize()), response.size());
+		
+		Page<TaskResponseDto> page = new PageImpl<>(response.subList(start, end), pageable, response.size());
+		return page;
+	}
+	
+	@Override
+	public Page<TaskResponseDto> findByFilters(String keyword, LocalDate initialDateStartDate,
+			LocalDate finalDateStartDate, LocalDate initialDateEndDate, LocalDate finalDateEndDate,
+			PriorityEnum priority, StatusEnum status, Long employeeId, Pageable pageable) throws BadRequestException {
+
+		validateDates(initialDateStartDate, finalDateStartDate);
+		validateDates(initialDateEndDate, finalDateEndDate);
+	
+		List<TaskResponseDto> response = taskRepository
+				.findByKeywordAndStartDateBetweenAndEndDateBetweenAndPriorityAndStatusAndEmployeeId(keyword, initialDateStartDate, 
+						finalDateStartDate, initialDateEndDate, finalDateEndDate, priority, status, employeeId)
+				.stream().map(task -> modelMapper.map(task, TaskResponseDto.class))
+				.collect(Collectors.toList());
 		
 		final int start = (int)pageable.getOffset();
 		final int end = Math.min((start + pageable.getPageSize()), response.size());
@@ -70,6 +95,7 @@ public class TaskServiceImpl implements TaskService {
 		verifyEmployee(taskRequestDto);
 
 		Task task = modelMapper.map(taskRequestDto, Task.class);
+		task.setId(null);
 		return taskRepository.save(task);
 	}
 	
@@ -108,6 +134,13 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	private void validateDates(LocalDate startDate, LocalDate endDate) throws BadRequestException {
+		
+		if (endDate == null && startDate == null) {
+			return;
+		}
+		if ((startDate == null && endDate != null) || (startDate != null && endDate == null)) {
+			throw new BadRequestException(MSG_ERROR_FILLING_DATES);
+		}
 		if (endDate.isBefore(startDate)) {
 			throw new BadRequestException(MSG_ERROR_DATE_GRATER_THAN);
 		}
