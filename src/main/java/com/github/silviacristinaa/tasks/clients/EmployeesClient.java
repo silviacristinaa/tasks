@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.github.silviacristinaa.tasks.dtos.responses.EmployeeResponseDto;
 
-@FeignClient(name = "employees", url = "${integrations.employees.url}")
+@FeignClient(name = "employees", url = "http://localhost:8080/api/v1")
 public interface EmployeesClient {
 	
 	@GetMapping("/employees/{id}")

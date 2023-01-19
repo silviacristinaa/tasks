@@ -2,9 +2,14 @@ package com.github.silviacristinaa.tasks.dtos.responses;
 
 import com.github.silviacristinaa.tasks.enums.DepartmentEnum;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 public class EmployeeResponseDto {
 	
 	private Long id;

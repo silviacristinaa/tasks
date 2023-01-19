@@ -1,21 +1,17 @@
 package com.github.silviacristinaa.tasks.entities;
 
-import java.time.LocalDate;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import com.github.silviacristinaa.tasks.enums.PriorityEnum;
 import com.github.silviacristinaa.tasks.enums.StatusEnum;
-
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter
 @Entity
 public class Task {
