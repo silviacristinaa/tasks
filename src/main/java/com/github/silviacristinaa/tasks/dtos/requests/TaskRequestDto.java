@@ -1,20 +1,22 @@
 package com.github.silviacristinaa.tasks.dtos.requests;
 
-import java.time.LocalDate;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.github.silviacristinaa.tasks.enums.PriorityEnum;
 import com.github.silviacristinaa.tasks.enums.StatusEnum;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter
 public class TaskRequestDto {
 	 
-	@NotBlank 
+	@NotBlank
 	private String title; 
 	private String description;
 	@NotNull

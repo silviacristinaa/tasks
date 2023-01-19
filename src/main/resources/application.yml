@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /api
+    context-path: /api/v1
   port: 8081
 
 spring:
@@ -17,8 +17,4 @@ spring:
    show-sql: true
    database-platform: org.hibernate.dialect.MySQL5Dialect
    hibernate:
-    ddl-auto: update   
-
-integrations:
-    employees:
-     url: http://localhost:8080/api
+    ddl-auto: update

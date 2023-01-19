@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TaskServiceImpl implements TaskService {
 
 	private static final String MSG_ERROR_FILLING_DATES = "to perform the search by dates, it is mandatory to fill the initial"
-			+ "date and final date"; 
+			+ " date and final date";
 	private static final String MSG_ERROR_DATE_GRATER_THAN = "End date must be greater than start date";
 	private static final String TASK_NOT_FOUND = "Task %s not found";
 	private static final String EMPLOYEE_NOT_FOUND = "Employee %s not found";
